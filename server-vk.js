@@ -217,18 +217,27 @@ const server = http.createServer(async (req, res) => {
     }
 
     try {
-      // Читаем заявку из БД
-      const lead = await fetchLeadFromDb(leadId);
+  console.log("[1] leadId =", leadId);
 
-      if (!lead) {
+  console.log("[2] fetchLeadFromDb...");
+  const lead = await fetchLeadFromDb(leadId);
+
+  console.log("[3] lead =", lead);
+
+  if (!lead) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Lead not found' }));
         return;
       }
 
       // Форматируем и отправляем в VK
-      const message = formatVkMessage(lead);
-      const vkResult = await sendVkMessage(message);
+     console.log("[4] formatVkMessage...");
+const message = formatVkMessage(lead);
+
+console.log("[5] sendVkMessage...");
+const vkResult = await sendVkMessage(message);
+
+console.log("[6] vkResult =", vkResult);
 
       // Обновляем статус в БД
       await updateVkStatusInDb(leadId, vkResult.success, vkResult.error?.error_msg || null);
